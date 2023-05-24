@@ -31,16 +31,19 @@ client.getStream(AiXpandEventType.HEARTBEAT).subscribe((hearbeatData) => {
     console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-');
 });
 
-
 client.on(AiXpandClientEvent.AIXP_CLIENT_CONNECTED, (data) => {
     console.log(data);
 });
 
-client.on(AiXpandClientEvent.AIXP_CLIENT_BOOTED, (err, status) => {
+client.on(AiXpandClientEvent.AIXP_CLIENT_BOOTED, () => {
     console.log('CLIENT SUCCESSFULLY BOOTED!');
 });
 
 client.on(AiXpandClientEvent.AIXP_CLIENT_FLEET_CONNECTED, (status) => {
+    console.dir(status, { depth: null });
+});
+
+client.on(AiXpandClientEvent.AIXP_RECEIVED_HEARTBEAT_FROM_ENGINE, (status) => {
     console.dir(status, { depth: null });
 });
 
@@ -53,4 +56,3 @@ client.on(AiXpandClientEvent.AIXP_CLIENT_SYS_TOPIC_SUBSCRIBE, (err, data) => {
 
     console.log(data);
 });
-

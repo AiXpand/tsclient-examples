@@ -43,13 +43,11 @@ Now that the prerequisites have been installed and the `.env` file configured, r
 $ npm install
 ```
 
-This will install all the dependencies of these example projects, including the `@aixpand/client` package. It is now time to transpile the TypeScript sources by running the following command in the CLI:
+This will install all the dependencies of these example projects, including the `@aixpand/client` package. It is now time to transpile the TypeScript sources and copying all the assets into `./dist` by running the following command in the CLI:
 
 ```
-$ tsc
+$ npm run build
 ```
-
-> IMPORTANT: The expected result is to run and return to the command line prompt without generating any output. It will instead create a new folder `./dist` in which the transpiled JavaScript is written.
 
 ## Executing the first example
 

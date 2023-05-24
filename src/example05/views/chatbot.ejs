@@ -1,0 +1,85 @@
+<html>
+<head>
+    <title>AiXpand Chatbot Example</title>
+    <style>
+        .reply .name {
+            font-weight: bold;
+        }
+
+        .reply .content {
+            font-size: small;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+</head>
+<body>
+    <label for='name'>Your name:</label>
+    <input name='name' id='name'><br>
+    <hr>
+    <div id='conversation'>
+    </div>
+    <hr>
+    <textarea id='question' name='question' cols='80' rows='10'></textarea><br>
+    <button id='send'>Send</button>
+    <button id='close'>Close conversation</button>
+    <script>
+        $('#close').on('click', () => {
+            $.ajax({
+                type: "POST",
+                url: '/end',
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                data: {},
+                success: () => {
+                    $('#conversation').empty();
+                    $('#name').val('');
+                }
+            });
+        });
+
+        $('#send').on('click', () => {
+            $('#send').prop('disabled', true);
+
+            $.ajax({
+                type: "POST",
+                url: '/question',
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                data: JSON.stringify({
+                    "name": $('#name').val(),
+                    "question": $('#question').val(),
+                }),
+                success: (response) => {
+                    if (response.status) {
+                        $('#conversation').append(`
+                            <div class="reply">
+                                <p class="name">${$('#name').val()}</p>
+                                <p class="content">${$('#question').val()}</p>
+                            <div>
+                        `).append(`
+                            <div class="reply">
+                                <p class="name">Funny Chatbot:</p>
+                                <p class="content">${response.content.funny}</p>
+                            <div>
+                        `).append(`
+                            <div class="reply">
+                                <p class="name">Sarcastic Chatbot:</p>
+                                <p class="content">${response.content.sarcastic}</p>
+                            <div>
+                        `).append(`
+                            <div class="reply">
+                                <p class="name">Plain Chatbot:</p>
+                                <p class="content">${response.content.plain}</p>
+                            <div>
+                        `);
+                    } else {
+                        alert(response.message);
+                    }
+
+                    $('#send').prop('disabled', false);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

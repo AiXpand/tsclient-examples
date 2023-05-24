@@ -12,7 +12,7 @@ module.exports = {
       node: true,
       jest: true,
     },
-    ignorePatterns: ['.eslintrc.js'],
+    ignorePatterns: ['.eslintrc.js', '*.d.ts'],
     rules: {
       '@typescript-eslint/max-len': 'off',
       '@typescript-eslint/interface-name-prefix': 'off',
