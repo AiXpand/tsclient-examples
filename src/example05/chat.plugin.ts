@@ -4,10 +4,12 @@ import {
     Embedded,
     PluginInstance,
     PluginPayload,
+    Alertable,
     AiXpandPlugin,
     AiXpandPluginInstance,
     AbstractRestCustomExec,
     RestRequestData,
+    AixpandAlerter,
 } from '@aixpand/client';
 
 export const CHAT_PLUGIN_SIGNATURE = 'CHAT_PLUGIN';
@@ -30,6 +32,7 @@ export class ChatData extends RestRequestData {
     }
 }
 
+@Alertable()
 @PluginInstance(CHAT_PLUGIN_SIGNATURE)
 export class ChatInstanceConfig extends AbstractRestCustomExec {
     @Bind('CHAT_USER_NAME')
@@ -109,6 +112,11 @@ export class ChatInstanceFactory extends AiXpandPlugin<ChatInstanceConfig> {
             'eNp1kM9KxDAQh+95iqF7Udj1DXooUlGk7bJdz2Fo02ywyWQzCeLbm8BWFPE08P2++ZOIHTgCYzV8mOgUMxxAE82wUAAfaE5TNOTEDmbKZixcqwiRgHN5fG7O8m1sT7JvuvY/qxvOL0PfNeOrPLancegbWAJZqDoqwy3y+4ExTMjRTNV+42gzX5JznxWgm3/pfkXjKiGC4rRGqMGvSRv3MF0wojcyO3cC4JoUl556ixctiyK3YJ8lrwLnbT8d+71J3tIiJlbhz6QCZb5VFSO/Vt4+sn7ClTO8F1/z+Hxl',
         );
 
-        return new AiXpandPluginInstance(instanceId, new ChatInstanceConfig(data, user, question, persona));
+        return new AiXpandPluginInstance(
+            instanceId,
+            new ChatInstanceConfig(data, user, question, persona),
+            null,
+            new AixpandAlerter(3),
+        );
     }
 }
