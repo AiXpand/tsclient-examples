@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv';
-import { AiXpandClient, AiXpandClientOptions, AiXpandEventType, AiXpandClientEvent } from '@aixpand/client';
+import { AiXpandClient, AiXpandClientEvent, AiXpandClientOptions, AiXpandEventType, CacheType } from '@aixpand/client';
 import * as process from 'process';
 
 dotenv.config();
@@ -17,12 +17,20 @@ const aixpOptions: AiXpandClientOptions = {
             clientId: null,
         },
     },
+    options: {
+        offlineTimeout: 60,
+        bufferPayloadsWhileBooting: false,
+        cacheType: CacheType.MEMORY,
+    },
     name: 'aixp-core',
     fleet: [process.env.AIXPAND_NODE],
     plugins: {},
 };
 
+console.log(`Attempting to connect to node: ${process.env.AIXPAND_NODE}`);
+
 const client = new AiXpandClient(aixpOptions);
+client.boot();
 
 client.getStream(AiXpandEventType.HEARTBEAT).subscribe((hearbeatData) => {
     console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-');
@@ -31,28 +39,24 @@ client.getStream(AiXpandEventType.HEARTBEAT).subscribe((hearbeatData) => {
     console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-');
 });
 
+// Connection debug information below:
 client.on(AiXpandClientEvent.AIXP_CLIENT_CONNECTED, (data) => {
     console.log(data);
 });
 
-client.on(AiXpandClientEvent.AIXP_CLIENT_BOOTED, () => {
-    console.log('CLIENT SUCCESSFULLY BOOTED!');
+client.on(AiXpandClientEvent.AIXP_CLIENT_BOOTED, (err, status) => {
+    console.log('CLIENT SUCCESSFULLY BOOTED!', new Date());
 });
 
-client.on(AiXpandClientEvent.AIXP_CLIENT_FLEET_CONNECTED, (status) => {
-    console.dir(status, { depth: null });
-});
-
-client.on(AiXpandClientEvent.AIXP_RECEIVED_HEARTBEAT_FROM_ENGINE, (status) => {
-    console.dir(status, { depth: null });
+client.on(AiXpandClientEvent.AIXP_RECEIVED_HEARTBEAT_FROM_ENGINE, (data) => {
+    console.log('AIXP_RECEIVED_HEARTBEAT_FROM_ENGINE', data);
 });
 
 client.on(AiXpandClientEvent.AIXP_CLIENT_SYS_TOPIC_SUBSCRIBE, (err, data) => {
     if (err) {
         console.error(err);
-
         return;
     }
 
-    console.log(data);
+    console.log('Subscription:', data);
 });
