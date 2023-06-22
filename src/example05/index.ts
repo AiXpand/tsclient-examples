@@ -168,6 +168,7 @@ app.listen(PORT, (): void => {
 // ===== AiXpand network client logic =====
 
 const client = new AiXpandClient(aixpOptions);
+client.boot();
 
 client.on(CHAT_PLUGIN_SIGNATURE, (context: AiXpandClientEventContext, err, data: ChatReply) => {
     console.log(`Received response from instance with id: ${context.instance.id}`);
